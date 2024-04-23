@@ -1,10 +1,19 @@
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
 from .models import VesselPosition
 from .serializers import VesselPositionSerializer
+from .pagination import StandardResultsSetPagination
 
-class VesselPositionViewSet(viewsets.ModelViewSet):
+
+class ViewSettings():
+    permission_classes = (IsAuthenticated, )
+    pagination_class = StandardResultsSetPagination
+
+
+class VesselPositionViewSet(viewsets.ModelViewSet, ViewSettings):
     queryset = VesselPosition.objects.all()
     serializer_class = VesselPositionSerializer
 
