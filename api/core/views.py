@@ -8,12 +8,12 @@ from .serializers import VesselPositionSerializer
 from .pagination import StandardResultsSetPagination
 
 
-class ViewSettings():
+class BaseModelViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, )
     pagination_class = StandardResultsSetPagination
 
 
-class VesselPositionViewSet(viewsets.ModelViewSet, ViewSettings):
+class VesselPositionViewSet(BaseModelViewSet):
     queryset = VesselPosition.objects.all()
     serializer_class = VesselPositionSerializer
 
