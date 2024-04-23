@@ -13,21 +13,20 @@ class VesselPositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = VesselPosition
         fields = '__all__'
-    
+
     def validate(self, data):
-        print(data.get('position_time'))
-        print(data['position_time'])
+        position_time = data.get('position_time')
         
-        if data.get('position_time') and data['position_time'] > timezone.now():
+        if position_time > timezone.now():
             raise serializers.ValidationError("Position time cannot be in the future.")
         return data
         
     def validate_latitude(self, value):
         if not (self.VALID_NEGATIVE_LATITUDE <= value <= self.VALID_LATITUDE):
-            raise serializers.ValidationError("Invalid  latitude")
+            raise serializers.ValidationError("Invalid  Latitude, Latitude must be between -90 and 90 degrees.")
         return value
 
     def validate_longitude(self, value):
         if not (self.VALID_NEGATIVE_LONGITUDE <= value <= self.VALID_LONGITUDE):
-            raise serializers.ValidationError("Invalid longitude.")
+            raise serializers.ValidationError("Invalid longitude, Longitude must be between -180 and 180 degrees.")
         return value
