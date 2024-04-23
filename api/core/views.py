@@ -9,13 +9,14 @@ from .pagination import StandardResultsSetPagination
 
 
 class BaseModelViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    # permission_classes = (IsAuthenticated, )
     pagination_class = StandardResultsSetPagination
 
 
 class VesselPositionViewSet(BaseModelViewSet):
     queryset = VesselPosition.objects.all()
     serializer_class = VesselPositionSerializer
+
 
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
