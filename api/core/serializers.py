@@ -20,13 +20,14 @@ class VesselPositionSerializer(serializers.ModelSerializer):
         
         if data.get('position_time') and data['position_time'] > timezone.now():
             raise serializers.ValidationError("Position time cannot be in the future.")
-
+        return data
+        
     def validate_latitude(self, value):
         if not (self.VALID_NEGATIVE_LATITUDE <= value <= self.VALID_LATITUDE):
             raise serializers.ValidationError("Invalid  latitude")
         return value
 
     def validate_longitude(self, value):
-        if not (-180 <= value <= 180):
+        if not (self.VALID_NEGATIVE_LONGITUDE <= value <= self.VALID_LONGITUDE):
             raise serializers.ValidationError("Invalid longitude.")
         return value
