@@ -3,7 +3,7 @@
     <h1 class="pt-10 pb-10">Vessels</h1>
 
     <v-row>
-      <v-col>
+      <v-col cols="12" md="6">
         <v-text-field
           class="pb-5"
           v-model="search"
@@ -26,7 +26,9 @@
           ></v-pagination>
         </div>
       </v-col>
-      <v-col>1</v-col>
+      <v-col cols="12" md="6">
+        <VesselForm />
+      </v-col>
     </v-row>
   </v-container>
 </template>
