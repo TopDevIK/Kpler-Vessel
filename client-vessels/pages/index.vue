@@ -4,6 +4,19 @@
 
     <v-row>
       <v-col>
+        <v-text-field
+          class="pb-5"
+          v-model="search"
+          density="compact"
+          label="Search"
+          prepend-inner-icon="mdi-magnify"
+          variant="solo-filled"
+          flat
+          hide-details
+          single-line
+          @input="debouncedInput"
+        ></v-text-field>
+
         <VesselsTable :loading="tableLoading" :vessels="vessels"></VesselsTable>
         <div class="text-center">
           <v-pagination
@@ -20,11 +33,15 @@
 
 <script lang="ts" setup>
 import { type DjangoResponse } from '~/types/DjangoResponse';
+import { debounce } from 'lodash';
+
+
 import type Vessel from '~/types/Vessel';
 
 const route = useRoute()
 const router = useRouter()
 
+const search = ref('')
 const page = ref(0)
 const tableLoading = ref(false);
 const totalVessels = ref(0);
@@ -34,11 +51,26 @@ const pages = computed(() => {
   return Math.ceil(totalVessels.value / 10)
 })
 
+const debouncedInput = debounce(async (e: any) => {
+  search.value = e.target.value;
+  // Perform your desired action with the input value
+  // For example, emit the value to a parent component
+  await getVessels(page.value)
+
+  router.push({
+    path: '/',
+    query: { page: page.value, vessel: search.value }
+  })
+}, 1000);
 
 const getVessels = async (pageNumber: number = 1) => {
   try {
     tableLoading.value = true
-    const response: DjangoResponse = await $fetch(`http://localhost:8000/api/vessels/?page=${pageNumber}`)
+    let url = `http://localhost:8000/api/vessels/?page=${pageNumber}`
+    if (search.value !== '') {
+      url = `http://localhost:8000/api/vessels/?page=${pageNumber}&vessel_id=${search.value}`
+    }
+    const response: DjangoResponse = await $fetch(url);
     vessels.value = response.results;
     totalVessels.value = response.count;
     page.value = pageNumber;;
@@ -50,6 +82,11 @@ const getVessels = async (pageNumber: number = 1) => {
 };
 
 onMounted(async () => {
+
+  if (route.query.vessel) {
+    search.value = route.query.vessel.toString();
+  }
+
   if (route.query.page) {
     await getVessels(Number(route.query.page))
   } else {
@@ -64,7 +101,7 @@ watch(page, async (page, previous) => {
 
   router.push({
     path: '/',
-    query: { page: page }
+    query: { page: page, vessel: search.value !== '' ? search.value : null }
   })
 })
 </script>
