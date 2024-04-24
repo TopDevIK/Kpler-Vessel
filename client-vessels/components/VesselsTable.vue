@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-table :loading="props.loading">
+    <v-table>
       <thead>
         <tr>
           <th class="text-left text-green">
@@ -21,6 +21,7 @@
         <tr
           v-for="item in vessels"
           :key="item.id"
+          v-if="!props.loading"
         >                
           <td>{{ item.vessel_id }}</td>
           <td>
@@ -33,6 +34,9 @@
             <v-chip color="primary"> {{ item.longitude }}</v-chip>
           </td>
         </tr>
+        <div v-else class="text-center">
+          Loading...
+        </div>
       </tbody>
       
     </v-table>
