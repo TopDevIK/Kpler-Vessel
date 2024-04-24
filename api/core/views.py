@@ -2,6 +2,9 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import filters
+
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import VesselPosition
 from .serializers import VesselPositionSerializer
@@ -17,6 +20,14 @@ class VesselPositionViewSet(BaseModelViewSet):
     queryset = VesselPosition.objects.all()
     serializer_class = VesselPositionSerializer
 
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['vessel_id']
+    search_fields = [
+        "vessel_id",
+    ]
+
+    def get_queryset(self):
+        return self.queryset.order_by('-position_time')
 
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
