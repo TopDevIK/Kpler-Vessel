@@ -18,27 +18,25 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="item in vessels"
-          :key="item.id"
-          v-if="!props.loading"
-        >                
-          <td>{{ item.vessel_id }}</td>
-          <td>
-            {{ $dayjs(item.position_time).format('YYYY/MM/DD HH:mm:ss') }}
-          </td>
-          <td>
-            <v-chip color="primary"> {{ item.latitude }}</v-chip>
-          </td>
-          <td>
-            <v-chip color="primary"> {{ item.longitude }}</v-chip>
-          </td>
-        </tr>
+        <template v-if="!props.loading">
+          <tr v-for="item in vessels" :key="item.id">
+            <td>{{ item.vessel_id }}</td>
+            <td>
+              {{ $dayjs(item.position_time).format('YYYY/MM/DD HH:mm:ss') }}
+            </td>
+            <td>
+              <v-chip color="primary">{{ item.latitude }}</v-chip>
+            </td>
+            <td>
+              <v-chip color="primary">{{ item.longitude }}</v-chip>
+            </td>
+          </tr>
+        </template>
         <div v-else class="text-center">
           Loading...
         </div>
       </tbody>
-      
+
     </v-table>
   </v-card>
 </template>
