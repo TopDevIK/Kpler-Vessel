@@ -39,12 +39,12 @@
   </v-card>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import type Vessel from '~/types/Vessel';
 
 const props = defineProps({
   vessels: {
-    required: true,
-    default: []
+    type: Array as PropType<Vessel[]>
   },
   loading: {
     required: false,
