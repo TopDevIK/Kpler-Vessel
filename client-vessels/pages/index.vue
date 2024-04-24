@@ -8,7 +8,7 @@
           class="pb-5"
           v-model="search"
           density="compact"
-          label="Search"
+          label="Search by vessel id"
           prepend-inner-icon="mdi-magnify"
           variant="solo-filled"
           flat
@@ -51,16 +51,31 @@ const pages = computed(() => {
   return Math.ceil(totalVessels.value / 10)
 })
 
-const debouncedInput = debounce(async (e: any) => {
-  search.value = e.target.value;
-  // Perform your desired action with the input value
-  // For example, emit the value to a parent component
-  await getVessels(page.value)
+
+function queryPush(page: number) {
+  const query = {
+    page: page,
+  }
+
+  const queryWithSearch = {
+    page: page,
+    vessel: search.value
+  }
 
   router.push({
     path: '/',
-    query: { page: page.value, vessel: search.value }
+    query: search.value !== '' ? queryWithSearch : query
   })
+}
+
+
+const debouncedInput = debounce(async (e: any) => {
+  search.value = e.target.value;
+
+  await getVessels(1)
+
+  queryPush(page.value);
+
 }, 1000);
 
 const getVessels = async (pageNumber: number = 1) => {
@@ -99,9 +114,6 @@ watch(page, async (page, previous) => {
     await getVessels(page)
   }
 
-  router.push({
-    path: '/',
-    query: { page: page, vessel: search.value !== '' ? search.value : null }
-  })
+  queryPush(page);
 })
 </script>
